@@ -4,17 +4,17 @@
 #include "MaxHeap.h"
 
 void insert_maxheap(int data){
-	//åˆ¤æ–­å®¹å™¨æ˜¯å¦å·²æ»¡
+	//ÅĞ¶ÏÈİÆ÷ÊÇ·ñÒÑÂú
 	if (M_CAPACITY == m_size){
 		return;
 	}
-	//æ”¾å…¥å®¹å™¨
+	//·ÅÈëÈİÆ÷
 	m_heap[m_size] = data;
 
-	//å¢åŠ é•¿åº¦
+	//Ôö¼Ó³¤¶È
 	m_size++;
 
-	//ä¸Šè°ƒä½ç½®
+	//ÉÏµ÷Î»ÖÃ
 	filterup_maxheap(data);
 
 	return;
@@ -24,9 +24,9 @@ void filterup_maxheap(int data){
 	if ((cur = get_index(data)) == -1){
 		return;
 	}
-	//çˆ¶å…ƒç´ ä½ç½®
+	//¸¸ÔªËØÎ»ÖÃ
 	int par = (cur - 1) / 2;
-	//å½“å‰å…ƒç´ å‰¯æœ¬
+	//µ±Ç°ÔªËØ¸±±¾
 	int temp = m_heap[cur];
 	while (cur > 0){
 		if (m_heap[par] >= temp){
@@ -53,18 +53,18 @@ int get_index(int data){
 
 int remove_maxheap(int data){
 	int  index = -1;
-	//å®¹å™¨å¿…é¡»æœ‰å…ƒç´ 
+	//ÈİÆ÷±ØĞëÓĞÔªËØ
 	if (m_size == 0){
 		return -1;
 	}
-	//å®¹å™¨ä¸­å¿…é¡»å­˜åœ¨åˆ é™¤å…ƒç´ 
+	//ÈİÆ÷ÖĞ±ØĞë´æÔÚÉ¾³ıÔªËØ
 	if ((index = get_index(data)) == -1){
 		return -1;
 	}
-	//ç”¨æœ€åä¸€ä¸ªå…ƒç´ è¦†ç›–éœ€è¦åˆ é™¤çš„å…ƒç´ 
+	//ÓÃ×îºóÒ»¸öÔªËØ¸²¸ÇĞèÒªÉ¾³ıµÄÔªËØ
 	m_heap[index] = m_heap[--m_size];
 
-	//ä¸‹è°ƒ
+	//ÏÂµ÷
 	filterdown_maxheap(index);
 
 	return index;
@@ -77,7 +77,7 @@ void filterdown_maxheap(int pos){
 
 	while (chd < m_size - 1){
 
-		//é€‰æ‹©å·¦å³å­©å­ä¸­è¾ƒå¤§çš„è¿›è¡Œæ¯”è¾ƒ
+		//Ñ¡Ôñ×óÓÒº¢×ÓÖĞ½Ï´óµÄ½øĞĞ±È½Ï
 		if (chd < m_size - 1 && m_heap[chd] < m_heap[chd + 1]){
 			chd++;
 		}
