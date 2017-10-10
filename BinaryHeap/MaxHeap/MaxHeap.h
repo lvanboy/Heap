@@ -3,28 +3,28 @@
 #define LENGTH(a)   ( sizeof(a)/sizeof(a[0]) ) 
 #define M_CAPACITY 15
 
-//Êı¾İÈİÆ÷
+//æ•°æ®å®¹å™¨
 int m_heap[M_CAPACITY];
 
-//³õÊ¼³¤¶È
+//åˆå§‹é•¿åº¦
 static int m_size = 0;
 
-//Ìí¼Ó
+//æ·»åŠ 
 void insert_maxheap(int data);
 
-//ÉÏµ÷
+//ä¸Šè°ƒ
 void filterup_maxheap(int data);
 
-//É¾³ı
+//åˆ é™¤
 int remove_maxheap(int data);
 
-//ÏÂµ÷
+//ä¸‹è°ƒ
 void filterdown_maxheap(int pos);
 
-//»ñÈ¡Ë÷Òı
-int get_index(int data);
+//è·å–ç´¢å¼•
+int get_index_maxheap(int data);
 
-//´òÓ¡¶Ñ
+//æ‰“å°å †
 void print_maxheap();
 
 #endif // !  _MAX_HEAP_H_
