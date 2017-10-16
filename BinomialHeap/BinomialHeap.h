@@ -24,7 +24,10 @@ BinomialNode *Delete_Binomial(BinomialHeap heap, Type key);
 BinomialNode *Reverse_Binomial(BinomialHeap heap);
 
 //更新节点
-void Update_Binomial(BinomialHeap heap, BinomialNode *node, Type newkey);
+void Update_Key_Binomial(BinomialHeap heap, BinomialNode *node, Type newkey);
+
+//更新节点
+void Update_Binomial(BinomialHeap heap, Type oldkey, Type newkey);
 
 //减小节点值
 void Decrease_Binomial(BinomialHeap heap, BinomialNode *node, Type newkey);
@@ -47,10 +50,15 @@ BinomialNode *Search_Binomial(BinomialHeap heap, Type key);
 //获取最小值
 BinomialNode *Minimum_Binomial(BinomialHeap heap);
 
+void _Minimum_Binomial(BinomialHeap heap, BinomialNode **pre_y, BinomialNode **y);
+
 //删除最小值
 BinomialNode *Extract_Minimum_Binomial(BinomialHeap heap);
 
 //打印
 void Print_Binomial(BinomialHeap heap);
+
+void _Print_Binomial(BinomialNode *node, BinomialNode *pre, int direction);
+
 
 #endif 
