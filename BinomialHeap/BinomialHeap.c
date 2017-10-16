@@ -72,12 +72,14 @@ BinomialNode *Union_Binomial(BinomialHeap h1, BinomialHeap h2){
 BinomialNode *Search_Binomial(BinomialHeap heap, Type key){
 	BinomialNode *child = NULL;
 	BinomialNode *parent = heap;
+
 	while (parent){
 		if (parent->key == key){
 			return parent;
 		}
 		else{
-			if ((child = Search_Binomial(parent->left, key) != NULL)){
+			//一个括号引发的血案
+			if ((child = Search_Binomial(parent->left, key))!= NULL){
 				return child;
 			}
 			parent = parent->next;
@@ -170,8 +172,8 @@ void Decrease_Binomial(BinomialHeap heap, BinomialNode *node, Type newkey){
 	if (!heap){
 		return;
 	}
-	if (Search_Binomial(heap, newkey) == NULL){
-		printf("the key of the node is updated don't exist.");
+	if (Search_Binomial(heap, newkey) != NULL){
+		printf("the key of the node is updated have existed.");
 		return;
 	}
 	node->key = newkey;
@@ -185,10 +187,35 @@ void Decrease_Binomial(BinomialHeap heap, BinomialNode *node, Type newkey){
 }
 
 void Increase_Binomial(BinomialHeap heap, BinomialNode *node, Type newkey){
+	if (Search_Binomial(heap, newkey) != NULL){
+		printf("the key of the node is updated have existed.");
+		return;
+	}
+	node->key = newkey;
+	BinomialNode *cur, *child, *least;
+	cur = node;
+	child = cur->left;
+	while (child){
+		if (cur->key > child->key){
+			least = child;
+			while (child->next){
+				if (child->next->key < least->key){
+					least = child->next;
+				}
+				child = child->next;
+			}
+			swap(cur->key, least->key);
+			cur = least;
+			child = cur->left;
+		}
+		else{
+			child = child->next;
+		}
+	}
 
 }
 
-void Update_Binomial(BinomialHeap heap, BinomialNode *node, Type newkey){
+void Update_Key_Binomial(BinomialHeap heap, BinomialNode *node, Type newkey){
 	if (!heap || !node){
 		return;
 	}
@@ -201,5 +228,112 @@ void Update_Binomial(BinomialHeap heap, BinomialNode *node, Type newkey){
 	else{
 		printf("no need to update!");
 	}
+	return;
+}
+
+void Update_Binomial(BinomialHeap heap, Type oldkey, Type newkey){
+	BinomialNode *node;
+	if (!heap){
+		return;
+	}
+	node = Search_Binomial(heap, oldkey);
+	if (node){
+		Update_Key_Binomial(heap, node, newkey);
+	}
+}
+
+void _Minimum_Binomial(BinomialHeap heap,BinomialNode **pre_y,BinomialNode **y){
+	if (!heap){
+		return;
+	}
+	//遍历整个根节点链表
+	BinomialNode *pre_x = heap;
+	BinomialNode *x = heap->next;
+	*pre_y = NULL;
+	//默认最小值 heap
+	*y = heap;
+	while (x){
+		if (x->key < (*y)->key){
+			*y = x;
+			*pre_y = pre_x;
+		}
+		pre_x = x;
+		x = x->next;
+	}
+	return;
+}
+
+
+BinomialNode *Minimum_Binomial(BinomialHeap heap){
+	//最小值保存在y指针变量中
+	BinomialNode *pre_y, *y;
+	_Minimum_Binomial(heap, &pre_y, &y);
+	return y;
+}
+
+BinomialNode *Extract_Minimum_Binomial(BinomialHeap heap){
+	//拿到最小值
+	BinomialNode *pre_y, *y;
+	BinomialNode *child;
+	if (!heap){
+		return heap;
+	}
+	//最小值存放在y中
+	_Minimum_Binomial(heap, &pre_y, &y);
+
+	//二项堆分解
+	//最小值是heap
+	if (!pre_y){
+		heap = heap->next;
+	}
+	else{
+		pre_y->next = y->next;
+	}
+	//在分解的堆中删除节点
+	child = Reverse_Binomial(y->left);
+	//合并新二项堆
+	heap = Union_Binomial(heap, child);
+	return heap;
+}
+
+void _Print_Binomial(BinomialNode *node, BinomialNode *pre, int direction){
+	while (node){
+		if (direction == 1){
+			printf("\t%2d(%d) is %2d's child\n", node->key, node->degree, pre->key);
+		}
+		else{
+			printf("\t%2d(%d) is %2d's next\n", node->key, node->degree, pre->key);
+		}
+		if (node->left){
+			_Print_Binomial(node->left, node, 1);
+		}
+		pre = node;
+		node = node->next;
+		direction = 2;
+	}
+}
+
+void Print_Binomial(BinomialHeap heap){
+	if (!heap){
+		return ;
+	}
+	BinomialNode *p = heap;
+	printf("==二项堆（");
+	while (p){
+		printf("B%d ", p->degree);
+		p = p->next;
+	}
+	printf(")的详细信息：\n");
+
+	int i = 0;
+	while (heap){
+		i++;
+		printf("%d. 二项树B%d: \n", i, heap->degree);
+		printf("\t%2d(%d) is root\n", heap->key, heap->degree);
+
+		_Print_Binomial(heap->left, heap, 1);
+		heap = heap->next;
+	}
+	printf("\n");
 	return;
 }
