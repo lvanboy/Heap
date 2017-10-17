@@ -62,7 +62,7 @@ void fib_heap_consolidate(FibHeap *heap);
 //移除最小节点，并返回新堆
 FibHeap *_fib_heap_extract_min(FibHeap *heap);
 
-void *fib_heap_extract_min(FibHeap *heap);
+void fib_heap_extract_min(FibHeap *heap);
 
 //获取堆中最小值
 FibNode *fib_heap_get_min(FibHeap *heap);
