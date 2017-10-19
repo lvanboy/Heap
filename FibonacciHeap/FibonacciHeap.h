@@ -14,6 +14,7 @@ typedef struct FibonacciNode{
 	int degree;
 	int marked;
 }FibonacciNode,FibNode;
+
 //fabonacci结构
 typedef struct FibonacciHeap{
 	int keyNum;
@@ -36,7 +37,7 @@ void fib_node_cat(FibNode *a, FibNode *b);
 FibHeap *fib_heap_make();
 
 //创建斐波拉契节点
-FibNode *fib_node_make();
+FibNode *fib_node_make(Type key);
 
 //将Node节点插入到斐波拉契堆heap中
 void fib_heap_insert_node(FibHeap *heap,FibNode *node);
@@ -60,12 +61,12 @@ void fib_heap_cons_make(FibHeap *heap);
 void fib_heap_consolidate(FibHeap *heap);
 
 //移除最小节点，并返回新堆
-FibHeap *_fib_heap_extract_min(FibHeap *heap);
+FibNode *_fib_heap_extract_min(FibHeap *heap);
 
 void fib_heap_extract_min(FibHeap *heap);
 
 //获取堆中最小值
-FibNode *fib_heap_get_min(FibHeap *heap);
+int fib_heap_get_min(FibHeap *heap,Type *pkey);
 
 //修改度数
 void renew_degree(FibNode *parent, int degree);
@@ -89,7 +90,7 @@ void fib_heap_update_key(FibHeap *heap, Type oldkey, Type newkey);
 void fib_heap_update_node(FibHeap *heap, FibNode *node, Type key);
 
 //在最小堆中搜索key，并返回key值节点
-FibNode *fib_node_search(FibHeap *root, Type key);
+FibNode *fib_node_search(FibNode *root, Type key);
 
 //在斐波拉契堆中搜索key，返回key值节点
 FibNode *fib_heap_search(FibHeap *heap, Type key);
