@@ -178,6 +178,8 @@ FibNode *fib_heap_remove_min(FibHeap *heap){
 		fib_node_remove(min);
 		heap->min = min->right;
 	}
+	//这里调了很长时间
+	min->left = min->right = min;
 	return min;
 }
 
@@ -203,6 +205,7 @@ void fib_heap_consolidate(FibHeap *heap){
 	}
 	int d, D;
 	FibNode *x, *y, *tmp;
+	fib_heap_cons_make(heap);
 	D = heap->maxDegree + 1;
 	for (int i = 0; i < D; i++){
 		heap->cons[i] = NULL;
@@ -224,7 +227,7 @@ void fib_heap_consolidate(FibHeap *heap){
 		}
 		heap->cons[d] = x;
 	}
-
+	heap->min = NULL;
 	for (int i = 0; i < D; i++){
 		if (heap->cons[i]){
 			if (heap->min){
@@ -357,10 +360,141 @@ void fib_heap_delete_node(FibHeap *heap, FibNode *Node){
 	return;
 }
 
+FibNode *fib_node_search(FibNode *root, Type key){
+	FibNode *t = root;
+	FibNode *p = NULL;
+	if (!root){
+		return root;
+	}
+	do{
+		if (t->key == key){
+			p = t;
+			break;
+		}
+		else{
+			if ((p = fib_node_search(t->child, key)) != NULL){
+				break;
+			}
+		}
+		t = t->right;
+	} while (t != root);
+	return p;
+}
+
+FibNode *fib_heap_search(FibHeap *heap, Type key){
+	if (!heap || !heap->min){
+		return NULL;
+	}
+	return fib_node_search(heap->min, key);
+}
+
+int fib_heap_contains(FibHeap *heap, Type key){
+	return fib_heap_search(heap, key) != NULL ? 1 : 0;
+}
+
 void fib_heap_delete_key(FibHeap *heap, Type key){
+	FibNode *node = NULL;
 	if (!heap){
 		return;
 	}
+	if ((node = fib_heap_search(heap, key) )== NULL){
+		return;
+	}
+	fib_heap_delete_node(heap, node);
+	return;
+}
 
+void fib_heap_update_node(FibHeap *heap, FibNode *node, Type key){
+	if (!heap || !heap->min||!node){
+		return;
+	}
+	if (key < node->key){
+		fib_heap_decrease(heap, node, key);
+	}
+	else if (key> node->key){
+		fib_heap_increase(heap, node, key);
+	}
+	else{
+		printf("no need to update!");
+	}
+	return;
+}
 
+void fib_heap_update_key(FibHeap *heap, Type oldkey, Type newkey){
+	FibNode *node = NULL;
+	if (!heap||!heap->min){
+		return;
+	}
+	if ((node = fib_heap_search(heap, oldkey)) == NULL){
+		return;
+	}
+	if (fib_heap_search(heap, newkey) != NULL){
+		return;
+	}
+	fib_heap_update_node(heap, node, newkey);
+	return;
+}
+
+void fib_node_destory(FibNode *node){
+	FibNode *start = node;
+	if (!node){
+		return;
+	}
+	do{
+		if (node->child){
+			fib_node_destory(node->child);
+		}
+		
+		node = node->right;
+		free(node->left);
+	} while (start != node);
+	return;
+}
+
+void fib_heap_destory(FibHeap *heap){
+	if (!heap){
+		return;
+	}
+	fib_node_destory(heap->min);
+	free(heap->cons);
+	free(heap);
+	return;
+}
+
+void _fib_heap_print(FibNode *node, FibNode *pre, int direction){
+	if (!node || !pre){
+		return;
+	}
+	FibNode *start = node;
+	do{
+		if (direction == 1){
+			printf("%8d(%d) is %2d's child\n",node->key,node->degree,pre->key);
+		}
+		else{
+			printf("%8d(%d) is %2d's next\n", node->key, node->degree, pre->key);
+		}
+		if (node->child){
+			_fib_heap_print(node->child, node, 1);
+		}
+		pre = node;
+		node = node->right;
+		direction = 2;
+	} while (start != node);
+	return;
+}
+
+void fib_heap_print(FibHeap *heap){
+	if (!heap || !heap->min){
+		return;
+	}
+	int i = 0;
+	FibNode *p = heap->min;
+	printf("== 斐波那契堆的详细信息: ==\n");
+	do{
+		i++;
+		printf("%2d. %4d(%d) is root\n", i, p->key, p->degree);
+		_fib_heap_print(p->child, p, 1);
+		p = p->right;
+	} while (p != heap->min);
+	return;
 }
